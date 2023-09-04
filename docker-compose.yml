@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: ./
+      dockerfile: ./dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=localhost port=5432 user=postgres password=postgres dbname=hermesdb sslmode=disable timezone=UTC connect_timeout=5"
+      PORT: "8080"
+
+  postgres:
+    image: 'postgres:15.0'
+    ports:
+      - "5432:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hermesdb
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
