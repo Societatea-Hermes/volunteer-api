@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"hermes-api/db"
+	"hermes-api/helpers"
 	"hermes-api/router"
 	"hermes-api/services"
 	"log"
@@ -19,7 +20,7 @@ type Application struct {
 	Models services.Models
 }
 
-var port = os.Getenv("PORT")
+var port = helpers.GetEnv("PORT", "8080")
 
 func (app *Application) Serve() error {
 	fmt.Println("API listening on port", port)

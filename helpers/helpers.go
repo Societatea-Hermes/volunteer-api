@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"os"
 )
 
 type jsonResponse struct {
@@ -70,4 +71,12 @@ func ErrorJSON(w http.ResponseWriter, err error, status ...int) error {
 	payload.Message = err.Error()
 
 	return WriteJSON(w, statusCode, payload)
+}
+
+func GetEnv(key, default_value string) string {
+	value, ok := os.LookupEnv(key)
+	if ok {
+		return value
+	}
+	return default_value
 }
