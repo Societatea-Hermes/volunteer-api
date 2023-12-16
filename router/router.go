@@ -2,7 +2,7 @@ package router
 
 import (
 	"fmt"
-	"hermes-api/controllers"
+	"volunteer-api/controllers"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"

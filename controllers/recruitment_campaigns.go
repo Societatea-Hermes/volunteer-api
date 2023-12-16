@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"hermes-api/helpers"
-	"hermes-api/services"
+	"volunteer-api/helpers"
+	"volunteer-api/models"
 	"net/http"
 )
 
 var recruitmentCampaign = models.RecruitmentCampaign
 
 func CreateRecruitmentCampaign(w http.ResponseWriter, r *http.Request) {
-	var campaignResponse services.RecruitmentCampaign
+	var campaignResponse models.RecruitmentCampaign
 
 	err := helpers.ReadJSON(w, r, &campaignResponse)
 	if err != nil {

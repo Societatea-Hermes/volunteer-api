@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"hermes-api/db"
-	"hermes-api/helpers"
-	"hermes-api/router"
-	"hermes-api/services"
+	"volunteer-api/db"
+	"volunteer-api/models"
+	"volunteer-api/router"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -16,15 +17,17 @@ type Config struct {
 
 type Application struct {
 	Config Config
-	Models services.Models
+	Models models.Models
 }
 
+var port = os.Getenv("APP_PORT")
+
 func (app *Application) Serve() error {
-	fmt.Println("API listening on port", app.Config.Port)
+	fmt.Println("API listening on port", port)
 
 	// define http server
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", app.Config.Port),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: router.Routes(),
 	}
 
@@ -32,28 +35,26 @@ func (app *Application) Serve() error {
 }
 
 func main() {
-
-	db_port := helpers.GetEnv("DB_PORT", "5432")
-	db_host := helpers.GetEnv("DB_HOST", "localhost")
-	db_user := helpers.GetEnv("DB_USER", "postgres")
-	db_pass := helpers.GetEnv("DB_PASS", "postgres")
-	db_name := helpers.GetEnv("DB_NAME", "postgres")
-
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		db_host, db_port, db_user, db_pass, db_name)
-
-	dbConn, err := db.NewAdapter(dsn)
-	if err != nil {
-		log.Fatal("Cannot connect to database", err)
-	}
-	defer dbConn.CloseDbConnection()
-
 	var cfg Config
-	cfg.Port = helpers.GetEnv("PORT", "8080")
+	cfg.Port = port
+	db_port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+	config := db.DatabaseConfig{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     db_port,
+		Username: os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_NAME"),
+	}
+
+	dbAdapter, err := db.NewAdapter(config)
+	if err != nil {
+		log.Fatalf("db connection failure: %v", err)
+	}
+	defer db.CloseDbConnection(dbAdapter)
 
 	app := &Application{
 		Config: cfg,
-		Models: services.New(dbConn.DB),
+		Models: models.New(dbAdapter),
 	}
 
 	err = app.Serve()

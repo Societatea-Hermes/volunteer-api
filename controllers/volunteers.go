@@ -1,19 +1,19 @@
 package controllers
 
 import (
-	"hermes-api/helpers"
-	"hermes-api/services"
+	"volunteer-api/helpers"
+	"volunteer-api/models"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
-var models services.Models
+var models models.Models
 var volunteer = models.Volunteer
 
 func GetAllVolunteers(w http.ResponseWriter, r *http.Request) {
-	var volunteers services.Volunteer
+	var volunteers models.Volunteer
 	all, err := volunteers.GetAllVolunteers()
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
@@ -23,7 +23,7 @@ func GetAllVolunteers(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateVolunteer(w http.ResponseWriter, r *http.Request) {
-	var volunteerResp services.Volunteer
+	var volunteerResp models.Volunteer
 
 	// err := json.NewDecoder(r.Body).Decode(&volunteerResp)
 	err := helpers.ReadJSON(w, r, &volunteerResp)
@@ -44,7 +44,6 @@ func GetVolunteerByEmail(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
 	volunteer, err := volunteer.GetVolunteerByEmail(email)
 	if err != nil {
-		log.Println("EROARE DOAMNE")
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -73,7 +72,7 @@ func DeactivateVolunteer(w http.ResponseWriter, r *http.Request) {
 
 func UpdateVolunteerPersonalInformation(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
-	var volunteerResp services.Volunteer
+	var volunteerResp models.Volunteer
 	err := helpers.ReadJSON(w, r, &volunteerResp)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)

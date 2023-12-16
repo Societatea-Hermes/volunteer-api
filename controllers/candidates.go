@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"hermes-api/helpers"
-	"hermes-api/services"
+	"volunteer-api/helpers"
+	"volunteer-api/models"
 	"net/http"
 	"strconv"
 
@@ -27,7 +27,7 @@ func GetAllCandidates(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateCandidate(w http.ResponseWriter, r *http.Request) {
-	var candidateResp services.Candidate
+	var candidateResp models.Candidate
 
 	err := helpers.ReadJSON(w, r, &candidateResp)
 	if err != nil {

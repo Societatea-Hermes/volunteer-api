@@ -1,57 +1,70 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
+	"volunteer-api/models"
 	"log"
 	"time"
 
-	_ "github.com/jackc/pgconn"
-	_ "github.com/jackc/pgx/v4"
-	_ "github.com/jackc/pgx/v4/stdlib"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-type DatabaseAdapter struct {
-	DB *sql.DB
+type DatabaseConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	DBName   string
 }
 
-var dbConn = &DatabaseAdapter{}
+func NewAdapter(config DatabaseConfig) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", config.Username, config.Password, config.Host, config.Port, config.DBName)
+	var db *gorm.DB
+	var err error
 
-const maxOpenDbConn = 10
-const maxIdleDbConn = 5
-const maxDbLifeTime = 5 * time.Minute
-
-func NewAdapter(dataSourceName string) (*DatabaseAdapter, error) {
-	// connect
-	d, err := sql.Open("pgx", dataSourceName)
-	if err != nil {
-		log.Fatalf("db connection failure: %v", err)
+	for i := 0; i < 5; i++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		} else {
+			fmt.Printf("Failed to connect to database (%d), retrying...\n", i)
+			time.Sleep(5 * time.Second)
+		}
 	}
-	d.SetMaxOpenConns(maxOpenDbConn)
-	d.SetMaxIdleConns(maxIdleDbConn)
-	d.SetConnMaxLifetime(maxDbLifeTime)
+	if err != nil {
+		fmt.Printf("Failed to connect to database after 5 retries\n")
+		return nil, err
+	}
 
-	err = testDB(d)
+	err = testDB(db)
 	if err != nil {
 		return nil, err
 	}
-	dbConn.DB = d
-	return dbConn, nil
+
+	db.AutoMigrate(&models.Volunteer{})
+	db.AutoMigrate(&models.Candidate{})
+	db.AutoMigrate(&models.RecruitmentCampaign{})
+
+	return db, nil
 }
 
-func testDB(d *sql.DB) error {
-	err := d.Ping()
+func testDB(db *gorm.DB) error {
+	sqlDB, err := db.DB()
 	if err != nil {
-		fmt.Println("Error", err)
 		return err
 	}
+
+	err = sqlDB.Ping()
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("*** Pinged database successfully! ***")
 	return nil
 }
 
-func (da DatabaseAdapter) CloseDbConnection() {
-	err := da.DB.Close()
-	if err != nil {
-		log.Fatalf("db close failure: %v", err)
-	}
+func CloseDbConnection(db *gorm.DB) {
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
