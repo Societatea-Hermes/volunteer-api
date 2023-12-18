@@ -1,20 +1,15 @@
 package controllers
 
 import (
+	"net/http"
 	"volunteer-api/helpers"
 	"volunteer-api/models"
-	"log"
-	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
-var models models.Models
-var volunteer = models.Volunteer
-
 func GetAllVolunteers(w http.ResponseWriter, r *http.Request) {
-	var volunteers models.Volunteer
-	all, err := volunteers.GetAllVolunteers()
+	all, err := volunteerModel.GetAllVolunteers()
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -32,7 +27,7 @@ func CreateVolunteer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdVolunteer, err := volunteer.CreateVolunteer(volunteerResp)
+	createdVolunteer, err := volunteerModel.CreateVolunteer(&volunteerResp)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -42,7 +37,7 @@ func CreateVolunteer(w http.ResponseWriter, r *http.Request) {
 
 func GetVolunteerByEmail(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
-	volunteer, err := volunteer.GetVolunteerByEmail(email)
+	volunteer, err := volunteerModel.GetVolunteerByEmail(email)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -52,7 +47,7 @@ func GetVolunteerByEmail(w http.ResponseWriter, r *http.Request) {
 
 func ActivateVolunteer(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
-	volunteer, err := volunteer.UpdateVolunteerActive(email, true)
+	volunteer, err := volunteerModel.UpdateVolunteerActive(email, true)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -62,7 +57,7 @@ func ActivateVolunteer(w http.ResponseWriter, r *http.Request) {
 
 func DeactivateVolunteer(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
-	volunteer, err := volunteer.UpdateVolunteerActive(email, false)
+	volunteer, err := volunteerModel.UpdateVolunteerActive(email, false)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -79,7 +74,7 @@ func UpdateVolunteerPersonalInformation(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	updatedVolunteer, err := volunteer.UpdatePersonalInfo(email, volunteerResp)
+	updatedVolunteer, err := volunteerModel.UpdatePersonalInfo(email, volunteerResp)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -91,7 +86,7 @@ func UpdateVolunteerPersonalInformation(w http.ResponseWriter, r *http.Request) 
 func ChangeDepartmentVolunteer(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
 	department := chi.URLParam(r, "department")
-	volunteer, err := volunteer.ChangeDepartment(email, department)
+	volunteer, err := volunteerModel.ChangeDepartment(email, department)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return

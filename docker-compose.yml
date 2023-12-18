@@ -12,8 +12,12 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      DSN: "host=localhost port=5432 user=postgres password=postgres dbname=hermesdb sslmode=disable timezone=UTC connect_timeout=5"
-      PORT: "8080"
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_HOST: volunteer-api-db-1
+      DB_PORT: 5432
+      DB_NAME: projects-db
+      APP_PORT: 8080
 
   postgres:
     image: 'postgres:15.0'
@@ -26,6 +30,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hermesdb
+      POSTGRES_DB: volunteersdb
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/

@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"volunteer-api/db"
-	"volunteer-api/models"
-	"volunteer-api/router"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"volunteer-api/db"
+	"volunteer-api/models"
+	"volunteer-api/router"
 )
 
 type Config struct {

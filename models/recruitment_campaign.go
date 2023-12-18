@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type RecruitmentCampaign struct {
@@ -11,7 +13,7 @@ type RecruitmentCampaign struct {
 	EndDate   time.Time `json:"end_date"`
 }
 
-func (r *RecruitmentCampaign) CreateRecruitmentCampaign(campaign* RecruitmentCampaign) (*RecruitmentCampaign, error) {
+func (r *RecruitmentCampaign) CreateRecruitmentCampaign(campaign *RecruitmentCampaign) (*RecruitmentCampaign, error) {
 	result := db.Create(&campaign)
 	if result.Error != nil {
 		return nil, result.Error

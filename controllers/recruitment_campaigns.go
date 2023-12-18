@@ -1,12 +1,10 @@
 package controllers
 
 import (
+	"net/http"
 	"volunteer-api/helpers"
 	"volunteer-api/models"
-	"net/http"
 )
-
-var recruitmentCampaign = models.RecruitmentCampaign
 
 func CreateRecruitmentCampaign(w http.ResponseWriter, r *http.Request) {
 	var campaignResponse models.RecruitmentCampaign
@@ -17,7 +15,7 @@ func CreateRecruitmentCampaign(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	campaign, err := recruitmentCampaign.CreateRecruitmentCampaign(campaignResponse)
+	campaign, err := recruitmentCampaignModel.CreateRecruitmentCampaign(&campaignResponse)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return

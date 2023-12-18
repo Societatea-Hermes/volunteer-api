@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"volunteer-api/helpers"
-	"volunteer-api/models"
 	"net/http"
 	"strconv"
+	"volunteer-api/helpers"
+	"volunteer-api/models"
 
 	"github.com/go-chi/chi/v5"
 )
-
-var candidate = models.Candidate
 
 func GetAllCandidates(w http.ResponseWriter, r *http.Request) {
 	recruitmentCampaignId, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
@@ -18,7 +16,7 @@ func GetAllCandidates(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-	all, err := candidate.GetAllCandidates(recruitmentCampaignId)
+	all, err := candidateModel.GetAllCandidates(recruitmentCampaignId)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -35,7 +33,7 @@ func CreateCandidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdCandidate, err := candidate.CreateCandidate(candidateResp)
+	createdCandidate, err := candidateModel.CreateCandidate(&candidateResp)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -46,7 +44,7 @@ func CreateCandidate(w http.ResponseWriter, r *http.Request) {
 func UpdateCandidateStatus(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "personal_email")
 	status := chi.URLParam(r, "status")
-	candidate, err := candidate.UpdateRecruitmentStatus(email, status)
+	candidate, err := candidateModel.UpdateRecruitmentStatus(email, status)
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return

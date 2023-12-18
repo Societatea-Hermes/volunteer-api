@@ -2,9 +2,8 @@ package db
 
 import (
 	"fmt"
-	"volunteer-api/models"
-	"log"
 	"time"
+	"volunteer-api/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

@@ -1,9 +1,10 @@
 package models
 
 import (
-	"context"
-	"log"
+	"errors"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Volunteer struct {
@@ -39,7 +40,7 @@ func (v *Volunteer) GetAllVolunteers() ([]Volunteer, error) {
 	return volunteers, nil
 }
 
-func (v *Volunteer) CreateVolunteer(volunteer* Volunteer) (*Volunteer, error) {
+func (v *Volunteer) CreateVolunteer(volunteer *Volunteer) (*Volunteer, error) {
 	result := db.Create(&volunteer)
 	if result.Error != nil {
 		return nil, result.Error
