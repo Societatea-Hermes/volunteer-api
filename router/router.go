@@ -2,8 +2,8 @@ package router
 
 import (
 	"fmt"
-	"volunteer-api/controllers"
 	"net/http"
+	"volunteer-api/controllers"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,10 +36,10 @@ func Routes() http.Handler {
 	router.Get(getByEmailURL, controllers.GetVolunteerByEmail)
 
 	activateURL := fmt.Sprintf("%s/activate", getByEmailURL)
-	router.Put(activateURL, controllers.ActivateVolunteer)
+	router.Patch(activateURL, controllers.ActivateVolunteer)
 
 	deactivateURL := fmt.Sprintf("%s/deactivate", getByEmailURL)
-	router.Put(deactivateURL, controllers.DeactivateVolunteer)
+	router.Patch(deactivateURL, controllers.DeactivateVolunteer)
 
 	updatePersonalInfoURL := fmt.Sprintf("%s/personal", getByEmailURL)
 	router.Put(updatePersonalInfoURL, controllers.UpdateVolunteerPersonalInformation)
@@ -54,6 +54,7 @@ func Routes() http.Handler {
 	// RECRUITMENT CANDIDATES ROUTES
 	candidateBasicURL := fmt.Sprintf("%s/candidates", recruitmentCampaignsBasicURL)
 	router.Get(candidateBasicURL, controllers.GetAllCandidates)
+	router.Put(candidateBasicURL, controllers.CreateCandidate)
 
 	updateCandidateStatusURL := fmt.Sprintf("%s/candidate/{personal_email}/{status}", candidateBasicURL)
 	router.Put(updateCandidateStatusURL, controllers.UpdateCandidateStatus)

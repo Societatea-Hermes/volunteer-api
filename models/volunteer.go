@@ -28,7 +28,7 @@ type Volunteer struct {
 	AuxMember             bool      `json:"aux_member"`
 	Vegetarian            bool      `json:"vegetarian"`
 	ShirtSize             string    `json:"shirt_size"`
-	RecruitmentCampaignId int64     `json:"recruitment_campaign_id"`
+	RecruitmentCampaignID uint      `json:"recruitment_campaign_id"`
 }
 
 func (v *Volunteer) GetAllVolunteers() ([]Volunteer, error) {
@@ -50,7 +50,7 @@ func (v *Volunteer) CreateVolunteer(volunteer *Volunteer) (*Volunteer, error) {
 
 func (v *Volunteer) GetVolunteerByEmail(email string) (*Volunteer, error) {
 	var volunteer Volunteer
-	result := db.First(&volunteer, email)
+	result := db.Where("email = ?", email).First(&volunteer)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -103,7 +103,7 @@ func (v *Volunteer) UpdatePersonalInfo(email string, body Volunteer) (*Volunteer
 	existingVolunteer.AuxMember = body.AuxMember
 	existingVolunteer.Vegetarian = body.Vegetarian
 	existingVolunteer.ShirtSize = body.ShirtSize
-	existingVolunteer.RecruitmentCampaignId = body.RecruitmentCampaignId
+	existingVolunteer.RecruitmentCampaignID = body.RecruitmentCampaignID
 
 	result = db.Save(&existingVolunteer)
 	if result.Error != nil {

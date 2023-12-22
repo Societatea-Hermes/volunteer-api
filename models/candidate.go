@@ -23,7 +23,7 @@ type Candidate struct {
 	FacebookProfile       string    `json:"facebook_profile"`
 	InstagramProfile      string    `json:"instagram_profile"`
 	RecruitmentStatus     string    `json:"recruitment_status"`
-	RecruitmentCampaignId int64     `json:"recruitment_campaign_id"`
+	RecruitmentCampaignID uint      `json:"recruitment_campaign_id"`
 }
 
 func (c *Candidate) GetAllCandidates(campaign_id int64) ([]Candidate, error) {
