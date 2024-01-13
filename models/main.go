@@ -1,15 +1,16 @@
-package services
+package models
 
 import (
-	"database/sql"
 	"time"
+
+	"gorm.io/gorm"
 )
 
-var db *sql.DB
+var db *gorm.DB
 
 const dbTimeout = time.Second * 3
 
-func New(dbPool *sql.DB) Models {
+func New(dbPool *gorm.DB) Models {
 	db = dbPool
 	return Models{}
 }
