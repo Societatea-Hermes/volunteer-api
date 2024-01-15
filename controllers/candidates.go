@@ -10,13 +10,7 @@ import (
 )
 
 func GetAllCandidates(w http.ResponseWriter, r *http.Request) {
-	recruitmentCampaignId, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
-	if err != nil {
-		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
-
-		return
-	}
-	all, err := candidateModel.GetAllCandidates(recruitmentCampaignId)
+	all, err := candidateModel.GetAllCandidates()
 	if err != nil {
 		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -50,4 +44,19 @@ func UpdateCandidateStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	helpers.WriteJSON(w, http.StatusOK, candidate)
+}
+
+func GetCandidatesByRecruitmentCampaign(w http.ResponseWriter, r *http.Request) {
+	recruitmentCampaignId, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+
+		return
+	}
+	all, err := candidateModel.GetAllCandidatesByCampaign(recruitmentCampaignId)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+	helpers.WriteJSON(w, http.StatusOK, all)
 }

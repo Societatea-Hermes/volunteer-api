@@ -16,18 +16,18 @@ type Volunteer struct {
 	Address               string    `json:"address"`
 	BirthDate             time.Time `json:"birth_date"`
 	Gender                string    `json:"gender"`
-	StudiesType           string    `json:"students_type"`
+	StudiesType           string    `json:"study_type"`
 	Specialization        string    `json:"specialization"`
 	StudyGroup            string    `json:"study_group"`
 	StudyLanguage         string    `json:"study_language"`
 	FacebookProfile       string    `json:"facebook_profile"`
 	InstagramProfile      string    `json:"instagram_profile"`
 	Email                 string    `json:"email"`
-	Active                bool      `json:"active"`
+	Active                bool      `json:"active" gorm:"default:true" `
 	Department            string    `json:"department"`
-	AuxMember             bool      `json:"aux_member"`
-	Vegetarian            bool      `json:"vegetarian"`
-	ShirtSize             string    `json:"shirt_size"`
+	AuxMember             bool      `json:"aux_member" gorm:"default:false" `
+	Vegetarian            bool      `json:"vegetarian" gorm:"default:false" `
+	ShirtSize             string    `json:"shirt_size" gorm:"default:'L'" `
 	RecruitmentCampaignID uint      `json:"recruitment_campaign_id"`
 }
 
