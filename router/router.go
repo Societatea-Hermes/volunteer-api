@@ -52,11 +52,15 @@ func Routes() http.Handler {
 	router.Post(recruitmentCampaignsBasicURL, controllers.CreateRecruitmentCampaign)
 
 	// RECRUITMENT CANDIDATES ROUTES
-	candidateBasicURL := fmt.Sprintf("%s/candidates", recruitmentCampaignsBasicURL)
+	candidateBasicURL := fmt.Sprintf("%s/candidates", baseApiURL)
 	router.Get(candidateBasicURL, controllers.GetAllCandidates)
-	router.Put(candidateBasicURL, controllers.CreateCandidate)
+	router.Post(candidateBasicURL, controllers.CreateCandidate)
 
 	updateCandidateStatusURL := fmt.Sprintf("%s/candidate/{personal_email}/{status}", candidateBasicURL)
 	router.Put(updateCandidateStatusURL, controllers.UpdateCandidateStatus)
+
+	// CANDIDATES BY RECRUITMENT CAMPAIGNS
+	candidatesByCampaignURL := fmt.Sprintf("%s/{id}/candidates", recruitmentCampaignsBasicURL)
+	router.Get(candidatesByCampaignURL, controllers.GetCandidatesByRecruitmentCampaign)
 	return router
 }

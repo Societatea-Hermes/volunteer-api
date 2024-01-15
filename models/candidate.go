@@ -16,17 +16,17 @@ type Candidate struct {
 	Address               string    `json:"address"`
 	BirthDate             time.Time `json:"birth_date"`
 	Gender                string    `json:"gender"`
-	StudiesType           string    `json:"students_type"`
+	StudiesType           string    `json:"studies_type"`
 	Specialization        string    `json:"specialization"`
 	StudyGroup            string    `json:"study_group"`
 	StudyLanguage         string    `json:"study_language"`
 	FacebookProfile       string    `json:"facebook_profile"`
 	InstagramProfile      string    `json:"instagram_profile"`
-	RecruitmentStatus     string    `json:"recruitment_status"`
+	RecruitmentStatus     string    `json:"recruitment_status" gorm:"default:'Pending'" `
 	RecruitmentCampaignID uint      `json:"recruitment_campaign_id"`
 }
 
-func (c *Candidate) GetAllCandidates(campaign_id int64) ([]Candidate, error) {
+func (c *Candidate) GetAllCandidates() ([]Candidate, error) {
 	var candidates []Candidate
 	result := db.Find(&candidates)
 	if result.Error != nil {
@@ -59,4 +59,13 @@ func (c *Candidate) UpdateRecruitmentStatus(personal_email string, status string
 	}
 
 	return &candidate, nil
+}
+
+func (c *Candidate) GetAllCandidatesByCampaign(id int64) ([]Candidate, error) {
+	var candidates []Candidate
+	result := db.Where("recruitment_campaign_id = ?", id).Find(&candidates)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return candidates, nil
 }
