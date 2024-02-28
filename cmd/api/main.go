@@ -20,7 +20,7 @@ type Application struct {
 	Models models.Models
 }
 
-var port = os.Getenv("APP_PORT")
+var port string
 
 func (app *Application) Serve() error {
 	fmt.Println("API listening on port", port)
@@ -34,16 +34,54 @@ func (app *Application) Serve() error {
 	return srv.ListenAndServe()
 }
 
+func configureApp() (int, string, string, string, string) {
+	p, ok := os.LookupEnv("APP_PORT")
+	if !ok {
+		port = "8080"
+	}
+	port = p
+
+	db_port_s, ok := os.LookupEnv("DB_PORT")
+	if !ok {
+		db_port_s = "4530"
+	}
+	db_port, _ := strconv.Atoi(db_port_s)
+
+	host, ok := os.LookupEnv("DB_HOST")
+	if !ok {
+		host = "localhost"
+	}
+
+	user, ok := os.LookupEnv("DB_USER")
+	if !ok {
+		user = "postgres"
+	}
+
+	pass, ok := os.LookupEnv("DB_PASSWORD")
+	if !ok {
+		pass = "postgres"
+	}
+
+	db_name, ok := os.LookupEnv("DB_NAME")
+	if !ok {
+		db_name = "volunteers"
+	}
+
+	return db_port, host, user, pass, db_name
+}
+
 func main() {
 	var cfg Config
 	cfg.Port = port
-	db_port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+
+	db_port, host, pass, user, db_name := configureApp()
+
 	config := db.DatabaseConfig{
-		Host:     os.Getenv("DB_HOST"),
+		Host:     host,
 		Port:     db_port,
-		Username: os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   os.Getenv("DB_NAME"),
+		Username: user,
+		Password: pass,
+		DBName:   db_name,
 	}
 
 	dbAdapter, err := db.NewAdapter(config)

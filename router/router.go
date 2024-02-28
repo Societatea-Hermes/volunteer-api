@@ -34,6 +34,7 @@ func Routes() http.Handler {
 
 	getByEmailURL := fmt.Sprintf("%s/volunteer/{email}", volunteerBaseString)
 	router.Get(getByEmailURL, controllers.GetVolunteerByEmail)
+	router.Put(getByEmailURL, controllers.UpdateVolunteerPersonalInformation)
 
 	activateURL := fmt.Sprintf("%s/activate", getByEmailURL)
 	router.Patch(activateURL, controllers.ActivateVolunteer)
@@ -41,11 +42,8 @@ func Routes() http.Handler {
 	deactivateURL := fmt.Sprintf("%s/deactivate", getByEmailURL)
 	router.Patch(deactivateURL, controllers.DeactivateVolunteer)
 
-	updatePersonalInfoURL := fmt.Sprintf("%s/personal", getByEmailURL)
-	router.Put(updatePersonalInfoURL, controllers.UpdateVolunteerPersonalInformation)
-
 	changeDepartmentURL := fmt.Sprintf("%s/changeDepartment/{department}", getByEmailURL)
-	router.Put(changeDepartmentURL, controllers.ChangeDepartmentVolunteer)
+	router.Patch(changeDepartmentURL, controllers.ChangeDepartmentVolunteer)
 
 	// RECRUITMENT CAMPAIGNS ROUTES
 	recruitmentCampaignsBasicURL := fmt.Sprintf("%s/recruitments", baseApiURL)
@@ -57,7 +55,7 @@ func Routes() http.Handler {
 	router.Post(candidateBasicURL, controllers.CreateCandidate)
 
 	updateCandidateStatusURL := fmt.Sprintf("%s/candidate/{personal_email}/{status}", candidateBasicURL)
-	router.Put(updateCandidateStatusURL, controllers.UpdateCandidateStatus)
+	router.Patch(updateCandidateStatusURL, controllers.UpdateCandidateStatus)
 
 	// CANDIDATES BY RECRUITMENT CAMPAIGNS
 	candidatesByCampaignURL := fmt.Sprintf("%s/{id}/candidates", recruitmentCampaignsBasicURL)
