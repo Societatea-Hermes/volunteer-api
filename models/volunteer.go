@@ -75,6 +75,21 @@ func (v *Volunteer) UpdateVolunteerActive(email string, active bool) (*Volunteer
 	return &volunteer, nil
 }
 
+func (v *Volunteer) DeleteVolunteer(email string) error {
+	var volunteer Volunteer
+	err := db.Where("email = ?", email).First(&volunteer).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Delete(&volunteer).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (v *Volunteer) UpdatePersonalInfo(email string, body Volunteer) (*Volunteer, error) {
 	var existingVolunteer Volunteer
 	result := db.Where("email = ?", email).First(&existingVolunteer)

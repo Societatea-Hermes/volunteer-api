@@ -2,9 +2,8 @@ package models
 
 import (
 	"errors"
-	"time"
-
 	"gorm.io/gorm"
+	"time"
 )
 
 type Candidate struct {
@@ -68,4 +67,51 @@ func (c *Candidate) GetAllCandidatesByCampaign(id int64) ([]Candidate, error) {
 		return nil, result.Error
 	}
 	return candidates, nil
+}
+
+func (c *Candidate) UpdateCandidate(body Candidate) (*Candidate, error) {
+	var existingCandidate Candidate
+	result := db.Where("id = ?", body.ID).First(&existingCandidate)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, errors.New("volunteer not found")
+	} else if result.Error != nil {
+		return nil, result.Error
+	}
+
+	existingCandidate.FirstName = body.FirstName
+	existingCandidate.LastName = body.LastName
+	existingCandidate.PersonalEmail = body.PersonalEmail
+	existingCandidate.Phone = body.Phone
+	existingCandidate.Address = body.Address
+	existingCandidate.BirthDate = body.BirthDate
+	existingCandidate.Gender = body.Gender
+	existingCandidate.StudiesType = body.StudiesType
+	existingCandidate.Specialization = body.Specialization
+	existingCandidate.StudyGroup = body.StudyGroup
+	existingCandidate.StudyLanguage = body.StudyLanguage
+	existingCandidate.FacebookProfile = body.FacebookProfile
+	existingCandidate.InstagramProfile = body.InstagramProfile
+	existingCandidate.RecruitmentCampaignID = body.RecruitmentCampaignID
+
+	result = db.Save(&existingCandidate)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &existingCandidate, nil
+}
+
+func (c *Candidate) DeleteCandidate(email string) error {
+	var candidate Candidate
+	err := db.Where("personal_email = ?", email).First(&candidate).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Delete(&candidate).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

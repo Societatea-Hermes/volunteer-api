@@ -35,6 +35,32 @@ func CreateCandidate(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, createdCandidate)
 }
 
+func UpdateCandidate(w http.ResponseWriter, r *http.Request) {
+	var candidateResp models.Candidate
+	err := helpers.ReadJSON(w, r, &candidateResp)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	updatedCandidate, err := candidateModel.UpdateCandidate(candidateResp)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	helpers.WriteJSON(w, http.StatusOK, updatedCandidate)
+}
+
+func DeleteCandidate(w http.ResponseWriter, r *http.Request) {
+	email := chi.URLParam(r, "personal_email")
+	err := candidateModel.DeleteCandidate(email)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+	}
+	helpers.WriteJSON(w, http.StatusOK, nil)
+}
+
 func UpdateCandidateStatus(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "personal_email")
 	status := chi.URLParam(r, "status")
