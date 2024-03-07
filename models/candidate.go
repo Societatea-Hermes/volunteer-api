@@ -10,8 +10,8 @@ type Candidate struct {
 	gorm.Model
 	FirstName             string    `json:"first_name"`
 	LastName              string    `json:"last_name"`
-	PersonalEmail         string    `json:"personal_email"`
-	Phone                 string    `json:"phone"`
+	PersonalEmail         string    `json:"personal_email" validate:"required,email"`
+	Phone                 string    `json:"phone" validate:"required,phone"`
 	Address               string    `json:"address"`
 	BirthDate             time.Time `json:"birth_date"`
 	Gender                string    `json:"gender"`
@@ -91,6 +91,7 @@ func (c *Candidate) UpdateCandidate(body Candidate) (*Candidate, error) {
 	existingCandidate.StudyLanguage = body.StudyLanguage
 	existingCandidate.FacebookProfile = body.FacebookProfile
 	existingCandidate.InstagramProfile = body.InstagramProfile
+	existingCandidate.RecruitmentStatus = body.RecruitmentStatus
 	existingCandidate.RecruitmentCampaignID = body.RecruitmentCampaignID
 
 	result = db.Save(&existingCandidate)
