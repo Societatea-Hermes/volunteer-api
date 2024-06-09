@@ -1,3 +1,4 @@
 ./hermesApi
 ./.env
 ./db-data/
+./idea/

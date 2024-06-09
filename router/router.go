@@ -34,6 +34,8 @@ func Routes() http.Handler {
 
 	getByEmailURL := fmt.Sprintf("%s/volunteer/{email}", volunteerBaseString)
 	router.Get(getByEmailURL, controllers.GetVolunteerByEmail)
+	router.Put(getByEmailURL, controllers.UpdateVolunteerPersonalInformation)
+	router.Delete(getByEmailURL, controllers.DeleteVolunteer)
 
 	activateURL := fmt.Sprintf("%s/activate", getByEmailURL)
 	router.Patch(activateURL, controllers.ActivateVolunteer)
@@ -41,11 +43,8 @@ func Routes() http.Handler {
 	deactivateURL := fmt.Sprintf("%s/deactivate", getByEmailURL)
 	router.Patch(deactivateURL, controllers.DeactivateVolunteer)
 
-	updatePersonalInfoURL := fmt.Sprintf("%s/personal", getByEmailURL)
-	router.Put(updatePersonalInfoURL, controllers.UpdateVolunteerPersonalInformation)
-
 	changeDepartmentURL := fmt.Sprintf("%s/changeDepartment/{department}", getByEmailURL)
-	router.Put(changeDepartmentURL, controllers.ChangeDepartmentVolunteer)
+	router.Patch(changeDepartmentURL, controllers.ChangeDepartmentVolunteer)
 
 	// RECRUITMENT CAMPAIGNS ROUTES
 	recruitmentCampaignsBasicURL := fmt.Sprintf("%s/recruitments", baseApiURL)
@@ -55,9 +54,13 @@ func Routes() http.Handler {
 	candidateBasicURL := fmt.Sprintf("%s/candidates", baseApiURL)
 	router.Get(candidateBasicURL, controllers.GetAllCandidates)
 	router.Post(candidateBasicURL, controllers.CreateCandidate)
+	router.Put(candidateBasicURL, controllers.UpdateCandidate)
 
-	updateCandidateStatusURL := fmt.Sprintf("%s/candidate/{personal_email}/{status}", candidateBasicURL)
-	router.Put(updateCandidateStatusURL, controllers.UpdateCandidateStatus)
+	candidatePersonalEmailUrl := fmt.Sprintf("%s/candidate/{personal_email}", candidateBasicURL)
+	router.Delete(candidatePersonalEmailUrl, controllers.DeleteCandidate)
+
+	updateCandidateStatusURL := fmt.Sprintf("%s/{status}", candidatePersonalEmailUrl)
+	router.Patch(updateCandidateStatusURL, controllers.UpdateCandidateStatus)
 
 	// CANDIDATES BY RECRUITMENT CAMPAIGNS
 	candidatesByCampaignURL := fmt.Sprintf("%s/{id}/candidates", recruitmentCampaignsBasicURL)

@@ -45,6 +45,15 @@ func GetVolunteerByEmail(w http.ResponseWriter, r *http.Request) {
 	helpers.WriteJSON(w, http.StatusOK, volunteer)
 }
 
+func DeleteVolunteer(w http.ResponseWriter, r *http.Request) {
+	email := chi.URLParam(r, "email")
+	err := volunteerModel.DeleteVolunteer(email)
+	if err != nil {
+		helpers.ErrorJSON(w, err, http.StatusInternalServerError)
+	}
+	helpers.WriteJSON(w, http.StatusOK, nil)
+}
+
 func ActivateVolunteer(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
 	volunteer, err := volunteerModel.UpdateVolunteerActive(email, true)
