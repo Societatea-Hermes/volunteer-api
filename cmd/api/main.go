@@ -74,7 +74,7 @@ func main() {
 	var cfg Config
 	cfg.Port = port
 
-	db_port, host, pass, user, db_name := configureApp()
+	db_port, host, user, pass, db_name := configureApp()
 
 	config := db.DatabaseConfig{
 		Host:     host,
